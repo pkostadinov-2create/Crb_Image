@@ -12,6 +12,25 @@ abstract class Crb_Image_Size {
 	private static $image_sizes = array();
 
 	/**
+	 * Accepts array of args, example:
+	 *  $name
+	 *  
+	 *  OR
+	 *  
+	 *  array(
+	 *  	'width' => $width,
+	 *  	'height' => $height,
+	 *  	'crop' => $crop,
+	 *  )
+	 */
+	public static function get($args) {
+		$args = $this->sanitize_args($args);
+		$name = $args['name'];
+
+		return self::$image_sizes[$name]->get();
+	}
+
+	/**
 	 * 
 	 * Accepts array of args, example:
 	 * 
@@ -46,6 +65,10 @@ abstract class Crb_Image_Size {
 		self::$image_sizes[$image_size_name] = new $class_name($args);
 	}
 
+	/* ==========================================================================
+		# Private Functions Below
+	========================================================================== */
+
 	/**
 	 * Returns Image_Size type
 	 */
@@ -69,6 +92,12 @@ abstract class Crb_Image_Size {
 	 * image sizes -> example array('width' => 100, 'height' => 100)
 	 */
 	private function sanitize_args($args) {
+		$args = wp_parse_args($args, array(
+			'width' => 0,
+			'height' => 0,
+			'crop' => false,
+		));
+
 		if ( $this->is_array_size($args) ) {
 			$args['name'] = 'crb_' . $args['width'] . '_' . $args['height'] . '_' . $args['crop'];
 		} elseif ( $this->is_name_size($args) ) {
@@ -93,11 +122,7 @@ abstract class Crb_Image_Size {
 	}
 
 	/**
-	 * Check if we have image defined with either:
-	 * 
-	 * name -> example crb_100_100_false
-	 * image sizes -> example array('width' => 100, 'height' => 100)
-	 * 
+	 * Helper Checks
 	 */
 	private function is_array_size($args) {
 		return empty($args['name']) && !empty($args['width']) && !empty($args['height']);
@@ -109,24 +134,5 @@ abstract class Crb_Image_Size {
 		global $_wp_additional_image_sizes;
 
 		return !empty($args['name']) && !empty($_wp_additional_image_sizes[$args['name']]);
-	}
-
-	/**
-	 * Accepts array of args, example:
-	 *  $name
-	 *  
-	 *  OR
-	 *  
-	 *  array(
-	 *  	'width' => $width,
-	 *  	'height' => $height,
-	 *  	'crop' => $crop,
-	 *  )
-	 */
-	public static function get($args) {
-		$args = $this->sanitize_args($args);
-		$name = $args['name'];
-
-		return self::$image_sizes[$name]->get();
 	}
 }
