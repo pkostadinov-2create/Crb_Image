@@ -1,7 +1,7 @@
 <?php
 
 abstract class Crb_Image_Size {
-	/**
+	/** 
 	 * $image_sizes example:
 	 * 
 	 *  array(
