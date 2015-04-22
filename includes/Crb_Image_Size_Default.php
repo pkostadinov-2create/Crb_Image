@@ -16,44 +16,38 @@ class Crb_Image_Size_Default extends Crb_Image_Size {
 
 	public function __construct($args) {
 		$this->args = $this->sanitize_args($args);
+
+		return $this;
 	}
-	
-	protected function sanitize_args($args) {
-		global $_wp_additional_image_sizes;
-		if ( !empty($_wp_additional_image_sizes[$args]) ) {
-			$args = $_wp_additional_image_sizes[$args];
+
+	public function sanitize_args($args) {
+		if ( is_array($args) ) {
+			$args = wp_parse_args($args, array(
+				'name' => '',
+				'width' => 0,
+				'height' => 0,
+				'crop' => false,
+			));
 		}
 
-		return wp_parse_args($args, array(
-			'width' => 0,
-			'height' => 0,
-			'crop' => false,
-			'crop_from_position' => apply_filters(
-				'Crb_Image_Size_Default/crop_from_position', 
-				apply_filters(
-					'Crb_Image_Size/crop_from_position', 
-					'center,center'
-				)
-			),
-			'jpeg_quality' => apply_filters(
-				'Crb_Image_Size_Default/jpeg_quality', 
-				apply_filters(
-					'Crb_Image_Size/jpeg_quality', 
-					90
-				)
-			),
-			'watermark_options' => apply_filters(
-				'Crb_Image_Size_Default/watermark_options', 
-				apply_filters(
-					'Crb_Image_Size/watermark_options', 
-					array()
-				)
-			),
-			'type' => 'Default',
-		));
-	}	
-
-	public static function set($args) {
-
+		return $args;
 	}
+
+	public static function get_info($image, $args, $additional_atts) {
+		$args = $this->sanitize_args($args);
+
+		wp_get_attachment_image_src( $attachment_id, $args );
+		$image_data = wp_get_attachment_image_src($image, $args);
+		if ( empty($image_data[0]) ) {
+			return;
+		}
+
+		return array(
+			'url' => $image_date[0],
+			'width' => $image_date[1],
+			'height' => $image_date[2],
+			'crop' => false,
+			'atts' => '',
+		);
+	}	
 }

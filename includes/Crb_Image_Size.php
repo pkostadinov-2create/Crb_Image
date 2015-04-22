@@ -13,26 +13,65 @@ abstract class Crb_Image_Size {
 
 	/**
 	 * Accepts array of args, example:
-	 *  $name
 	 *  
-	 *  OR
 	 *  
+	 * @param $args - accepts either:
+	 *  $image_size_name
+	 * 
 	 *  array(
 	 *  	'width' => $width,
 	 *  	'height' => $height,
 	 *  	'crop' => $crop,
 	 *  )
+	 * 
+	 * @param $additional_atts - accepts either:
+	 * 
+	 * 
+	 * 
+	 * 
 	 */
-	public static function get($args) {
+	public static function get($image, $args, $additional_atts = array()) {
+		$image_info = $this->get_info($image, $args, $additional_atts);
+
+		return '<img src="' . $image_info['url'] . '" width="' . $image_info['width'] . '" height="' . $image_info['height'] . '" ' . $attr . ' />';
+	}
+
+	public static function get_url($image, $args, $additional_atts = array()) {
+		$image_info = $this->get_info($image, $args, $additional_atts);
+
+		return $image_info['url'];
+	}
+
+	public static function get_width($image, $args, $additional_atts = array()) {
+		$image_info = $this->get_info($image, $args, $additional_atts);
+
+		return $image_info['width'];
+	}
+
+	public static function get_height($image, $args, $additional_atts = array()) {
+		$image_info = $this->get_info($image, $args, $additional_atts);
+
+		return $image_info['height'];
+	}
+
+	public static function get_crop($image, $args, $additional_atts = array()) {
+		$image_info = $this->get_info($image, $args, $additional_atts);
+
+		return $image_info['height'];
+	}
+
+	public static function get_info($image, $args, $additional_atts = array()) {
 		$args = $this->sanitize_args($args);
 		$name = $args['name'];
 
-		return self::$image_sizes[$name]->get();
+		return self::$image_sizes[$name]->get_info($image, $args, $additional_atts);
 	}
 
 	/**
 	 * 
 	 * Accepts array of args, example:
+	 * 
+	 *  $name = 'crb_100_100_false'
 	 * 
 	 *  array(
 	 *  	'name' => $name,
@@ -63,6 +102,8 @@ abstract class Crb_Image_Size {
 		$args = $this->sanitize_args($args);
 
 		self::$image_sizes[$image_size_name] = new $class_name($args);
+
+		return self::$image_sizes[$image_size_name];
 	}
 
 	/* ==========================================================================
@@ -75,9 +116,7 @@ abstract class Crb_Image_Size {
 	private function get_image_type($args) {
 		$type = '';
 
-		if ( $this->is_array_size($args) || $this->is_name_size($args) ) {
-			$type = 'Array';
-		} elseif ( $this->is_default_size($args) ) {
+		if ( $this->is_default_size($args) ) {
 			$type = 'Default';
 		} else {
 			$type = 'Wpthumb';
@@ -115,7 +154,6 @@ abstract class Crb_Image_Size {
 					'crop' => $name_args[3],
 				);
 			}
-
 		}
 
 		return $args;

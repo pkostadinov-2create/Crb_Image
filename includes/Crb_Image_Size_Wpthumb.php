@@ -48,7 +48,40 @@ class Crb_Image_Size_Wpthumb extends Crb_Image_Size {
 		));
 	}
 
-	public static function set($args) {
+	public static function get_info($image, $args, $additional_atts) {
+		$args = $this->sanitize_args($args);
 
+		$args_attrs = array( 'class', 'alt' );
+		$attrs = array();
+
+		foreach ( $args_attrs as $att ) {
+			if ( isset( $args[$att] ) ) {
+				$attrs[$att] = $args[$att];
+				unset( $args[$att] );
+			}
+		}
+
+		if ( !empty( $args ) ) {
+			$url = esc_url( $args['url'] );
+			unset( $args[0] );
+
+			$image = wpthumb( $url, $args );
+
+			list( $width, $height ) = getimagesize( $image );
+
+			$attr = '';
+
+			foreach ( $attrs as $a => $value ) {
+				$attr .= ' ' . $a . '="' . esc_attr( $value ) . '"';
+			}
+
+			return array(
+				'src' => $image,
+				'width' => $width,
+				'height' => $height,
+				'attr' => $attr
+			);
+		}
 	}
+
 }
