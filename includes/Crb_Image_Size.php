@@ -30,7 +30,13 @@ abstract class Crb_Image_Size {
 	public static function get($image, $args, $additional_atts = array()) {
 		$image_info = $this->get_info($image, $args, $additional_atts);
 
-		return '<img src="' . $image_info['url'] . '" width="' . $image_info['width'] . '" height="' . $image_info['height'] . '" ' . $attr . ' />';
+		return '
+		<img 
+			src="' . $image_info['url'] . '" 
+			width="' . $image_info['width'] . '" 
+			height="' . $image_info['height'] . '" ' . 
+			$image_info['atts'] . ' 
+		/>';
 	}
 
 	public static function get_url($image, $args, $additional_atts = array()) {
