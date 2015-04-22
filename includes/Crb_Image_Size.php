@@ -24,10 +24,7 @@ abstract class Crb_Image_Size {
 	 *  	'crop' => $crop,
 	 *  )
 	 * 
-	 * @param $additional_atts - accepts either:
-	 * 
-	 * 
-	 * 
+	 * @param $additional_atts - accepts array with additional args
 	 * 
 	 */
 	public static function get($image, $args, $additional_atts = array()) {
@@ -64,7 +61,11 @@ abstract class Crb_Image_Size {
 		$args = $this->sanitize_args($args);
 		$name = $args['name'];
 
-		return self::$image_sizes[$name]->get_info($image, $args, $additional_atts);
+		$info = self::$image_sizes[$name]->get_info($image, $args);
+
+		$info['atts'] = $this->sanitize_additional_atts($additional_atts, $name);
+
+		return $info;
 	}
 
 	/**
@@ -123,6 +124,25 @@ abstract class Crb_Image_Size {
 		}
 
 		return $type;
+	}
+
+	/**
+	 * Prepares the additional img attributes
+	 */
+	public function sanitize_additional_atts($additional_atts, $size_name) {
+		$additional_atts_output = '';
+		$additional_atts = wp_parse_args($additional_atts, array(
+			'class' => '',
+			'alt' => '',
+		));
+
+		$additional_atts['class'] .= ' ' . $name;
+
+		foreach ( $additional_atts as $attr => $value ) {
+			$additional_atts_output .= ' ' . $attr . '="' . esc_attr( $value ) . '"';
+		}
+
+		return $additional_atts_output;
 	}
 
 	/**

@@ -33,7 +33,7 @@ class Crb_Image_Size_Default extends Crb_Image_Size {
 		return $args;
 	}
 
-	public static function get_info($image, $args, $additional_atts) {
+	public static function get_info($image, $args) {
 		$args = $this->sanitize_args($args);
 
 		wp_get_attachment_image_src( $attachment_id, $args );
@@ -47,7 +47,6 @@ class Crb_Image_Size_Default extends Crb_Image_Size {
 			'width' => $image_date[1],
 			'height' => $image_date[2],
 			'crop' => false,
-			'atts' => '',
 		);
 	}	
 }
