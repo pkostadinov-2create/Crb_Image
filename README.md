@@ -23,7 +23,7 @@ Developer Documentation
 
 	### Crb_Image_Default
 	### Crb_Image_Wpthumb_Attachment
-	### Crb_Image_Wpthumb_Url 
+	### Crb_Image_Wpthumb_Url
 
 Тези 3 класа ще огтоварят за различното поведение при генериране на желаните данни. Данните ще се генерират при инициализиране на инстанция от класа. Инстанции от тези 3 класа ще се пазят като обект в главния клас Crb_Image.
 
