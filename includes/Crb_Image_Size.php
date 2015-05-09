@@ -60,7 +60,7 @@ abstract class Crb_Image_Size {
 	public static function get_crop($image, $args, $additional_atts = array()) {
 		$image_info = $this->get_info($image, $args, $additional_atts);
 
-		return $image_info['height'];
+		return $image_info['crop'];
 	}
 
 	public static function get_info($image, $args, $additional_atts = array()) {
