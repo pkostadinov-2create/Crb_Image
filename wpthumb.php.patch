@@ -1,0 +1,35 @@
+Index: wpthumb.php
+===================================================================
+--- wpthumb.php	(revision 326225)
++++ wpthumb.php	(working copy)
+@@ -455,19 +455,25 @@
+ 	private function crop_from_position( $editor, $width, $height, $position, $resize = true ) {
+ 
+ 		$size = $editor->get_size();
++		$original_size = $editor->get_size();
+ 
+ 		// resize to the largest dimension
+ 		if ( $resize ) {
+ 
+-			$ratio1 = $size['width'] / $size['height'];
+-			$ratio2 = $width / $height;
++			$ratio_img = $size['width'] / $size['height'];
++			$ratio_size = $width / $height;
+ 
+-			if ( $ratio1 < $ratio2 ) {
++			if ( $original_size['width'] < $width || $original_size['height'] < $height ) {
++				$width = $original_size['width'];
++				$height = $original_size['height'];
++			}
++
++			if ( $ratio_img < $ratio_size ) {
+ 				$_width = $width;
+-			    $_height = $width / $ratio1;
++				$_height = $width / $ratio_img;
+ 			} else {
+ 				$_height = $height;
+-			    $_width = $height * $ratio1;
++				$_width = $height * $ratio_img;
+ 			}
+ 
+ 			$editor->resize( $_width, $_height );
