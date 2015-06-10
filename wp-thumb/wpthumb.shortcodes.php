@@ -23,27 +23,30 @@ function wpthumb_img_shortcode( $args ) {
 	}
 
 	if ( is_numeric( $args[0] ) ) {
-
 		$attachment_id = $args[0];
-		unset( $args[0] );
-
-		return wp_get_attachment_image( $attachment_id, $args, false, $attrs );
-
+		$url = wp_get_attachment_image_src( $attachment_id, 'full' );
 	} else if ( ! empty( $args ) ) {
-
 		$url = esc_url( $args[0] );
-		unset( $args[0] );
-
-		$image = wpthumb( $url, $args );
-
-		list( $width, $height ) = getimagesize( $image );
-
-		$attr = '';
-
-		foreach ( $attrs as $a => $value ) {
-			$attr .= ' ' . $a . '="' . esc_attr( $value ) . '"';
-		}
-
-		return '<img src="' . $image . '" width="' . $width . '" height="' . $height . '"' . $attr . ' />';
 	}
+
+	unset( $args[0] );
+
+	$image = wpthumb( $url, $args );
+
+	list( $width, $height ) = getimagesize( $image );
+
+	if ( !empty($args['retina']) ) {
+		$retina_del = intval($args['retina']);
+
+		$width = $width/$retina_del;
+		$height = $height/$retina_del;
+	}
+
+	$attr = '';
+
+	foreach ( $attrs as $a => $value ) {
+		$attr .= ' ' . $a . '="' . esc_attr( $value ) . '"';
+	}
+
+	return '<img src="' . $image . '" width="' . $width . '" height="' . $height . '"' . $attr . ' />';
 }
